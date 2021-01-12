@@ -1,7 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
-from typing import Dict, List
+from typing import Dict, List, Tuple
 import os
+from progress.bar import Bar
 
 
 RUSSIAN_ALPHABET = 'абвгдеёжзийклмнопрстуфхцчшщыэюя'.split()
@@ -14,7 +15,7 @@ LETTER_URL = lambda letter, from_count: \
 SYNS_PER_PAGE = 300
 
 
-def create_urls_for_letter(letter: str) -> List[str]:
+def create_urls_for_letter(letter: str) -> Tuple[List[str], int]:
 	page = requests.get(TEXT_RU_URL)
 	soup = BeautifulSoup(page.text, 'lxml')
 
@@ -31,7 +32,7 @@ def create_urls_for_letter(letter: str) -> List[str]:
 		result.append(needed_url(count))
 		count += SYNS_PER_PAGE
 
-	return result
+	return result, syn_count
 
 
 def word_syns_from_url(url: str) -> List[str]:
@@ -44,22 +45,24 @@ def word_syns_from_url(url: str) -> List[str]:
 
 
 def get_for_letter(letter: str) -> Dict[str, List[str]]:
-	letter_urls = create_urls_for_letter(letter)
+	letter_urls, count_of_words = create_urls_for_letter(letter)
 
 	result = {}
-	for letter_url in letter_urls:
-		page = requests.get(letter_url)
-		soup = BeautifulSoup(page.text, 'lxml')
+	with Bar('Downloading...', max=count_of_words) as bar:
+		for letter_url in letter_urls:
+			page = requests.get(letter_url)
+			soup = BeautifulSoup(page.text, 'lxml')
 
-		words_elements = soup.find_all('div', { 'class': 'ellipsis' })
-		for word_element in words_elements:
-			href = BASE_URL + str(word_element.findChild().get('href'))
-			word = str(word_element.findChild().text)
+			words_elements = soup.find_all('div', { 'class': 'ellipsis' })
+			for word_element in words_elements:
+				href = BASE_URL + str(word_element.findChild().get('href'))
+				word = str(word_element.findChild().text)
 
-			result[word] = word_syns_from_url(href)
+				result[word] = word_syns_from_url(href)
+
+				bar.next()
 
 	return result
-
 
 
 def main():
