@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from typing import Dict, List
+import os
 
 
 RUSSIAN_ALPHABET = 'абвгдеёжзийклмнопрстуфхцчшщыэюя'.split()
@@ -62,9 +63,12 @@ def get_for_letter(letter: str) -> Dict[str, List[str]]:
 
 
 def main():
-	synonyms = get_for_letter('ж')
+	for_letter = input('Parse for letter: ').lower()
+	synonyms = get_for_letter(for_letter)
 
-	with open('Буква Ж.txt', 'w', encoding='utf8') as file:
+	output_path = os.path.join(os.path.dirname(__file__), '../letters/{}.txt'.format(for_letter))
+
+	with open(output_path, 'w+', encoding='utf8') as file:
 		for word in synonyms:
 			file.write(word)
 			file.write(',')
