@@ -2,15 +2,20 @@ import sys
 import os
 
 
-def main():
+def error(message: str) -> None:
+	print('--', message, '--')
+	exit(1)
+
+
+def main() -> None:
 	if len(sys.argv) < 2:
-		raise KeyError('No input word')
+		error('No input word')
 	
 	word = sys.argv[1].lower()
 
 	filepath = './letters/{}.txt'.format(word[0])
 	if not os.path.exists(filepath):
-		raise os.error('No such synonyms')
+		error('No such synonyms')
 
 	with open(filepath, 'r+', encoding='utf8') as file:
 		for string in file:
@@ -19,7 +24,7 @@ def main():
 				print(result)
 				return
 
-	print('Not finded')
+	error('Not finded')
 
 
 if __name__ == '__main__':
