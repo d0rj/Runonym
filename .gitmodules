@@ -1,0 +1,3 @@
+[submodule "letters"]
+	path = letters
+	url = https://github.com/d0rj/Synonyms
