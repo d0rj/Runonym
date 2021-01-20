@@ -8,11 +8,29 @@ PROGRAMM_VERSION = '0.1'
 
 
 def error(message: str) -> None:
+	"""
+	Prints error to console and it crashes the program.
+	"""
+
 	print('--', message, '--')
 	exit(1)
 
 
 def print_result(string: str, word: str = None) -> None:
+	"""
+	Prints given string in format 'word,[w1,w2,...,wn]' 
+	where 'w_i' is synonyms of 'word' 
+
+	to console with format: 'Word - [w1, w2, ...]'
+
+	Parameters
+	----------
+
+	string: A given source string.
+
+	word: Defines a word to the left of a dash. If not specified, then the required one is found from the string.
+	"""
+
 	splitted = string.split(',', 1)
 
 	if word is None:
@@ -25,7 +43,13 @@ def print_result(string: str, word: str = None) -> None:
 
 def find_strict(word: str) -> bool:
 	"""
-	Searches synonym for given word literally
+	Searches synonym for given word literally.
+
+	Returns
+	-------
+
+	bool: 
+		Was there a synonym for the word.
 	"""
 
 	filepath = './letters/{}.txt'.format(word[0])
@@ -44,7 +68,13 @@ def find_strict(word: str) -> bool:
 
 def find_started(word: str) -> bool:
 	"""
-	Searches synonyms for all words started with given but lemmatized
+	Searches synonyms for all words started with given but lemmatized.
+
+	Returns
+	-------
+
+	bool: 
+		Was there a synonym for the word.
 	"""
 
 	from nltk.stem.snowball import SnowballStemmer 
