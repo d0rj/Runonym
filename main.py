@@ -1,5 +1,7 @@
 import sys
 import os
+import argparse
+from typing import Callable
 
 
 def error(message: str) -> None:
@@ -54,12 +56,21 @@ def find_started(word: str) -> bool:
 
 
 def main() -> None:
-	if len(sys.argv) < 2:
-		error('No input word')
-	
-	word = sys.argv[1].lower()
+	parser = argparse.ArgumentParser('Runonym', description='Simple programm to search synonym for russian words.')
+	parser.add_argument('-w', '--word', action='store', type=str, required=True, help='Word to search')
+	parser.add_argument('--starts', action='store_true', help='Search synonyms for all words starts with given word but lemmatized')
 
-	finded = find_strict(word)
+	parsed_args = parser.parse_args(sys.argv[1:])
+	
+	word = str(parsed_args.word).lower()
+
+	search_function: Callable[[str], bool]
+	if bool(parsed_args.starts):
+		search_function = find_started
+	else:
+		search_function = find_strict
+
+	finded = search_function(word)
 	if not finded:
 		error('Not finded')
 
