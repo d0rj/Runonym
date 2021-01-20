@@ -12,6 +12,17 @@ def error(message: str) -> None:
 	exit(1)
 
 
+def print_result(string: str, word: str = None) -> None:
+	splitted = string.split(',', 1)
+
+	if word is None:
+		word = splitted[0]
+
+	result = splitted[1]
+
+	print(word.capitalize(), '-', result)
+
+
 def find_strict(word: str) -> bool:
 	"""
 	Searches synonym for given word literally
@@ -25,8 +36,7 @@ def find_strict(word: str) -> bool:
 	with open(filepath, 'r+', encoding='utf8') as file:
 		for string in file:	
 			if string.lower().startswith(word):
-				result = string.lower().replace('{},'.format(word), '')
-				print(result)
+				print_result(string, word)
 				return True
 
 	return False
@@ -51,8 +61,7 @@ def find_started(word: str) -> bool:
 	with open(filepath, 'r+', encoding='utf8') as file:
 		for string in file:	
 			if string.lower().startswith(stemmed_word):
-				result = string.lower().replace('{},'.format(word), '')
-				print(result)
+				print_result(string)
 				finded = True
 
 	return finded
