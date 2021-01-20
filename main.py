@@ -4,6 +4,9 @@ import argparse
 from typing import Callable
 
 
+PROGRAMM_VERSION = '0.1'
+
+
 def error(message: str) -> None:
 	print('--', message, '--')
 	exit(1)
@@ -56,9 +59,10 @@ def find_started(word: str) -> bool:
 
 
 def main() -> None:
-	parser = argparse.ArgumentParser('Runonym', description='Simple programm to search synonym for russian words.')
+	parser = argparse.ArgumentParser('runonym', description='Simple programm to search synonym for russian words.')
 	parser.add_argument('-w', '--word', action='store', type=str, required=True, help='Word to search')
-	parser.add_argument('--starts', action='store_true', help='Search synonyms for all words starts with given word but lemmatized')
+	parser.add_argument('--starts', action='store_true', help='Flag: Search synonyms for all words starts with given word but lemmatized.')
+	parser.add_argument('-v', '--version', action='version', version='Runonym {}'.format(PROGRAMM_VERSION))
 
 	parsed_args = parser.parse_args(sys.argv[1:])
 	
